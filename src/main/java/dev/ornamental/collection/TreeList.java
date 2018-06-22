@@ -25,7 +25,7 @@ import java.util.stream.Stream;
  * and <em>n<sub>2</sub></em> are the sizes of the original lists
  * (both of which are cleared).<br/>
  * Although {@link #addAll(int, Collection)} method
- * generally requires <em>O(m log(m + n))</em> time, it runs in <em>O(m + log(n))</em> time if
+ * generally requires <em>O(m log(m + n))</em> time, it runs in <em>O(m + log(m + n))</em> time if
  * the insertion location is either before the first or past the last element of the list
  * (<em>m</em> is the size of the added collection, <em>n</em> is the size of the list).
  * The better time complexity naturally applies to the {@link #addAll(Collection)} method.
@@ -492,7 +492,7 @@ public class TreeList<T> extends AbstractList<T> {
 	 * original elements whose indices start the insertion position will have their indices
 	 * increased by the size of the collection.<br/>
 	 * If the collection is prepended ({@code index == 0}) or appended ({@code index == size()})
-	 * to this list, the operation runs in <em>O(m + log(n))</em> time, where <em>n</em> is the
+	 * to this list, the operation runs in <em>O(m + log(m + n))</em> time, where <em>n</em> is the
 	 * size of this list and <em>m</em> is the size of the collection. Otherwise, the operation runs in
 	 * <em>O(m log(m + n))</em> time.
 	 * @param index the index at which the first element of the collection will be inserted
@@ -541,6 +541,10 @@ public class TreeList<T> extends AbstractList<T> {
 	 * @return the new list being a concatenation of the two original lists
 	 */
 	public static <Q> TreeList<Q> concat(TreeList<? extends Q> prefix, TreeList<? extends Q> suffix) {
+		if (prefix == suffix) {
+			throw new IllegalArgumentException("The prefix and suffix lists must be different instances.");
+		}
+
 		Tree mergedTree = new Tree();
 		RankedRedBlackTree.merge(prefix.tree, suffix.tree, mergedTree);
 		Stream.of(prefix, suffix).forEachOrdered(list -> {

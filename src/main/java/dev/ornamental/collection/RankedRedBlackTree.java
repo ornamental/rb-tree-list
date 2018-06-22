@@ -463,11 +463,12 @@ abstract class RankedRedBlackTree<T extends WeightedNode<T>> {
 	}
 
 	/**
-	 * Merges two trees so that the 0-based ranks in the second tree are increased
+	 * Merges two different trees so that the 0-based ranks in the second tree are increased
 	 * by the number of elements in the first tree. The operation executes
 	 * in <em>O(log(n<sub>1</sub> + n<sub>2</sub>))</em> time, n<sub>1</sub> and n<sub>2</sub>
 	 * being the sizes of the trees.
-	 * Both original trees will be emptied as the result of this operation.
+	 * Both original trees will be emptied as the result of this operation.<br/>
+	 * All the arguments must be different tree instances.
 	 * @param left the tree to serve as the left side of the merge; its elements' ranks will remain unchanged
 	 * @param right the tree to serve as the right side of the merge (the appended one); each of its element's
 	 * rank will be incremented by the amount of elements in the first tree
@@ -476,6 +477,10 @@ abstract class RankedRedBlackTree<T extends WeightedNode<T>> {
 	 */
 	protected static <Q extends WeightedNode<Q>> void
 		merge(RankedRedBlackTree<Q> left, RankedRedBlackTree<Q> right, RankedRedBlackTree<Q> result) {
+
+		if (left == right || right == result || result == left) {
+			throw new IllegalArgumentException("All the three trees must be different instances.");
+		}
 
 		if (right.root == right.nil) {
 			result.root = left.root;
