@@ -28,19 +28,14 @@ final class TreeNodeListIterator<T extends WeightedNode<T>> implements ListItera
 
 	/**
 	 * The flag set if and only if the iterator is located before the element of the tree at the end of
-	 * {@link #currentNode} nodeBuffer
+	 * {@link #currentNode} node buffer
 	 */
 	private boolean before;
 
 	/**
-	 * The rank of the element at the end of the nodeBuffer
+	 * The rank of the element at the end of the node buffer (0 for an empty list)
 	 */
 	private int rank;
-
-	/**
-	 * The number of descents to the left subtree in the current nodeBuffer
-	 */
-	private int leftTurns;
 
 	/**
 	 * The flag showing that the iterator is in a state where modification operations are accessible
@@ -62,7 +57,6 @@ final class TreeNodeListIterator<T extends WeightedNode<T>> implements ListItera
 		this.currentNode = initialPosition;
 		this.before = before;
 
-		this.leftTurns = 0;
 		if (initialPosition.size() > 0) {
 			T current = currentNode.get(0);
 			this.rank = current.getLeft().getWeight();
@@ -70,7 +64,6 @@ final class TreeNodeListIterator<T extends WeightedNode<T>> implements ListItera
 			for (int i = 1; i < currentNode.size(); i++) {
 				T child = currentNode.get(i);
 				if (current.getLeft() == child) {
-					this.leftTurns++;
 					this.rank = this.rank + child.getLeft().getWeight() - child.getWeight();
 				} else {
 					this.rank = this.rank + child.getLeft().getWeight() + 1;
@@ -78,7 +71,8 @@ final class TreeNodeListIterator<T extends WeightedNode<T>> implements ListItera
 				current = child;
 			}
 		} else {
-			this.rank = -1;
+			this.rank = 0;
+			this.before = true;
 		}
 	}
 
@@ -86,10 +80,7 @@ final class TreeNodeListIterator<T extends WeightedNode<T>> implements ListItera
 	public boolean hasNext() {
 		return
 			tree.root != tree.nil // currentNode.size() > 0
-			&& (
-				before
-				|| leftTurns > 0
-				|| currentNode.get(currentNode.size() - 1).getRight() != tree.nil);
+			&& (before || rank < tree.root.getWeight() - 1);
 	}
 
 	@Override
@@ -108,14 +99,12 @@ final class TreeNodeListIterator<T extends WeightedNode<T>> implements ListItera
 				while (current.getLeft() != tree.nil) {
 					current = current.getLeft();
 					currentNode.add(current);
-					leftTurns++;
 				}
 			} else { // leftTurns > 0, see hasNext()
 				while (true) {
 					currentNode.removeLast();
 					T parent = currentNode.get(currentNode.size() - 1);
 					if (current == parent.getLeft()) {
-						leftTurns--;
 						current = parent;
 						break;
 					}
@@ -134,9 +123,7 @@ final class TreeNodeListIterator<T extends WeightedNode<T>> implements ListItera
 	public boolean hasPrevious() {
 		return
 			tree.root != tree.nil // currentNode.size() > 0
-			&& (!before
-				|| leftTurns < currentNode.size() - 1
-				|| currentNode.get(currentNode.size() - 1).getLeft() != tree.nil);
+			&& (!before || rank > 0);
 	}
 
 	@Override
@@ -152,7 +139,6 @@ final class TreeNodeListIterator<T extends WeightedNode<T>> implements ListItera
 			if (current.getLeft() != tree.nil) {
 				current = current.getLeft();
 				currentNode.add(current);
-				leftTurns++;
 				while (current.getRight() != tree.nil) {
 					current = current.getRight();
 					currentNode.add(current);
@@ -165,7 +151,6 @@ final class TreeNodeListIterator<T extends WeightedNode<T>> implements ListItera
 						current = parent;
 						break;
 					}
-					leftTurns--;
 					current = parent;
 				}
 			}
@@ -209,7 +194,6 @@ final class TreeNodeListIterator<T extends WeightedNode<T>> implements ListItera
 			tree.find(rank, currentNode); // relocate the iterator
 		}
 
-		updateLeftTurns();
 		modificationPossible = false;
 	}
 
@@ -267,7 +251,6 @@ final class TreeNodeListIterator<T extends WeightedNode<T>> implements ListItera
 				rank++;
 			}
 			before = false;
-			updateLeftTurns();
 		}
 
 		modificationPossible = false;
@@ -295,23 +278,5 @@ final class TreeNodeListIterator<T extends WeightedNode<T>> implements ListItera
 	public T getCurrentNode() {
 		int size = currentNode.size();
 		return size == 0 ? null : currentNode.get(size - 1);
-	}
-
-	/**
-	 * Updates the {@link #leftTurns} field after a modification likely to have changed its value.
-	 */
-	private void updateLeftTurns() {
-		leftTurns = 0;
-		if (currentNode.size() > 0) {
-			WeightedNode<T> current = currentNode.get(0);
-
-			for (int i = 1; i < currentNode.size(); i++) {
-				WeightedNode<T> child = currentNode.get(i);
-				if (current.getLeft() == child) {
-					leftTurns++;
-				}
-				current = child;
-			}
-		}
 	}
 }
