@@ -335,8 +335,10 @@ public class TreeList<T> extends AbstractList<T> {
 		}
 
 		this.tree = new Tree();
-		this.tree.root = buildTree(
-			source.iterator(), size, 31 - Integer.numberOfLeadingZeros(size));
+		if (size > 0) {
+			int blackHeight = size == 1 ? 1 : 31 - Integer.numberOfLeadingZeros(size);
+			this.tree.root = buildTree(source.iterator(), size, blackHeight);
+		}
 		this.nodeBuffer = new RankedRedBlackTree.NodeBuffer<>(
 			1 + RankedRedBlackTree.maxTreeDepth(this.tree.root.getWeight()));
 	}
@@ -574,9 +576,11 @@ public class TreeList<T> extends AbstractList<T> {
 				left.withLeft(tree.nil).withRight(tree.nil).makeRed();
 				root = produceNode(values).withLeft(left).withRight(tree.nil);
 			} else { // length == 3
-				Node left = produceNode(values);
+				Node left = produceNode(values).withLeft(tree.nil).withRight(tree.nil);
+				left.makeRed();
 				root = produceNode(values);
-				Node right = produceNode(values);
+				Node right = produceNode(values).withLeft(tree.nil).withRight(tree.nil);
+				right.makeRed();
 				root.withLeft(left).withRight(right);
 			}
 		} else { // has both subtrees
