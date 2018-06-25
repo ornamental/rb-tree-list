@@ -12,7 +12,7 @@ import java.util.Random;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
-public class TreeListRandomizedTest {
+public final class TreeListRandomizedTest {
 
 	@org.junit.Test
 	public void get() {
