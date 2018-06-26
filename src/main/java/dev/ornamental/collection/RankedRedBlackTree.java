@@ -501,11 +501,12 @@ abstract class RankedRedBlackTree<T extends WeightedNode<T>> {
 
 			if (leftBlackHeight >= rightBlackHeight) {
 				// the right tree will be appended to the right of this one
+				Q nodeToRemove = rightBuffer.get(rightBuffer.size() - 1);
 				Q leftmost = result.produceNode(RED);
-				leftmost.copyPayload(rightBuffer.get(rightBuffer.size() - 1));
+				leftmost.copyPayload(nodeToRemove);
 				right.remove(rightBuffer);
 
-				if (leftmost.isBlack()) { // the black height of the right tree may have decreased
+				if (nodeToRemove.isBlack()) { // the black height of the right tree may have decreased
 					rightBlackHeight = getBlackHeight(right, rightBuffer, false);
 				}
 
@@ -527,7 +528,7 @@ abstract class RankedRedBlackTree<T extends WeightedNode<T>> {
 					cursor++;
 
 					leftmost.makeRed();
-					leftmost.withLeft(leftBuffer.get(cursor));
+					leftmost.withLeft(cursor == leftBuffer.size() ? left.nil : leftBuffer.get(cursor));
 					leftmost.withRight(right.root);
 
 					// the cursor is not on the root because leftBlackHeight > rightBlackHeight;
@@ -550,11 +551,12 @@ abstract class RankedRedBlackTree<T extends WeightedNode<T>> {
 			} else {
 				// left tree will be prepended to the left of the right tree; the code is symmetric to the above
 				// except that the case leftBlackHeight == rightBlackHeight is not possible
+				Q nodeToRemove = leftBuffer.get(leftBuffer.size() - 1);
 				Q rightmost = result.produceNode(RED);
-				rightmost.copyPayload(leftBuffer.get(leftBuffer.size() - 1));
+				rightmost.copyPayload(nodeToRemove);
 				left.remove(leftBuffer);
 
-				if (rightmost.isBlack()) {
+				if (nodeToRemove.isBlack()) {
 					leftBlackHeight = getBlackHeight(left, leftBuffer, true);
 				}
 
@@ -567,9 +569,9 @@ abstract class RankedRedBlackTree<T extends WeightedNode<T>> {
 				}
 				cursor++;
 
-				rightmost.withLeft(left.root);
-				rightmost.withRight(rightBuffer.get(cursor));
 				rightmost.makeRed();
+				rightmost.withLeft(left.root);
+				rightmost.withRight(cursor == rightBuffer.size() ? right.nil : rightBuffer.get(cursor));
 
 				rightBuffer.get(cursor - 1).withLeft(rightmost);
 				rightBuffer.set(cursor, rightmost);
@@ -607,12 +609,16 @@ abstract class RankedRedBlackTree<T extends WeightedNode<T>> {
 	 * @param buffer the buffer to store the path to the rightmost (leftmost) node in
 	 * @param rightmost the flag showing if the rightmost ({@code true}) of the leftmost ({@code false})
 	 * node has to be located
-	 * @return the black height of the tree
+	 * @return the black height of the tree (including the black leaf NIL nodes)
 	 */
 	private static <Q extends WeightedNode<Q>> int getBlackHeight(
 		RankedRedBlackTree<Q> tree, NodeBuffer<Q> buffer, boolean rightmost) {
 
 		buffer.clear();
+		if (tree.root == tree.nil) {
+			return 0;
+		}
+
 		Q current = tree.root;
 		int blackHeight = 1; // for the always black root
 		while (current != tree.nil) {
