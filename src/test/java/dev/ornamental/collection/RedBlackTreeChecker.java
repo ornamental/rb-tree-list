@@ -23,6 +23,14 @@ public final class RedBlackTreeChecker {
 		checkSubtree(tree.root, tree.nil);
 	}
 
+	/**
+	 * Checks the red-black tree backing the supplied {@link TreeList}.
+	 * @param list the list to check the backing tree of
+	 */
+	public static void checkTreeInvariants(TreeList<?> list) {
+		RedBlackTreeChecker.checkTreeInvariants(list.tree);
+	}
+
 	private static <Q extends WeightedNode<Q>> int checkSubtree(Q node, Q nil) {
 		int leftBlackHeight = node.getLeft() == nil ? 0 : checkSubtree(node.getLeft(), nil);
 		int rightBlackHeight = node.getRight() == nil ? 0 : checkSubtree(node.getRight(), nil);
