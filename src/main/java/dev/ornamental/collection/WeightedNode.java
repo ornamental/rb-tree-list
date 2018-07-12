@@ -116,6 +116,7 @@ abstract class WeightedNode<S extends WeightedNode<S>> {
 	/**
 	 * Sets the weight of the node.
 	 * @param weight the new weight of the node
+	 * @return this node
 	 */
 	@SuppressWarnings("unchecked")
 	public S withWeight(int weight) {

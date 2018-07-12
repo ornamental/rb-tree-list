@@ -9,7 +9,7 @@ abstract class RankedRedBlackTree<T extends WeightedNode<T>> {
 
 	/**
 	 * This class represents a node buffer used to store the path to the modification location
-	 * during the modification operations.<br/>
+	 * during the modification operations.<br>
 	 * This class does no checks of methods' argument values.
 	 * @param <S> the value stored in the nodes
 	 */
@@ -377,7 +377,7 @@ abstract class RankedRedBlackTree<T extends WeightedNode<T>> {
 	}
 
 	/**
-	 * Performs the right rotation of a node.<br/>
+	 * Performs the right rotation of a node.<br>
 	 * It is not checked whether the supplied parent is correct.
 	 * @param node the node
 	 * @param parent the node's parent node
@@ -402,7 +402,7 @@ abstract class RankedRedBlackTree<T extends WeightedNode<T>> {
 	}
 
 	/**
-	 * Performs the right rotation of a node.<br/>
+	 * Performs the right rotation of a node.<br>
 	 * It is not checked whether the supplied parent is correct.
 	 * @param node the node
 	 * @param parent the node's parent node
@@ -467,13 +467,14 @@ abstract class RankedRedBlackTree<T extends WeightedNode<T>> {
 	 * by the number of elements in the first tree. The operation executes
 	 * in <em>O(log(n<sub>1</sub> + n<sub>2</sub>))</em> time, n<sub>1</sub> and n<sub>2</sub>
 	 * being the sizes of the trees.
-	 * Both original trees will be emptied as the result of this operation.<br/>
+	 * Both original trees will be emptied as the result of this operation.<br>
 	 * All the arguments must be different tree instances.
 	 * @param left the tree to serve as the left side of the merge; its elements' ranks will remain unchanged
 	 * @param right the tree to serve as the right side of the merge (the appended one); each of its element's
 	 * rank will be incremented by the amount of elements in the first tree
 	 * @param result the recipient tree instance whose root will be replaced with the root of the produced
 	 * tree; the current contents of this tree will be lost
+	 * @param <Q> the type of the node used by the original and resulting trees
 	 */
 	protected static <Q extends WeightedNode<Q>> void
 		merge(RankedRedBlackTree<Q> left, RankedRedBlackTree<Q> right, RankedRedBlackTree<Q> result) {

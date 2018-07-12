@@ -17,13 +17,13 @@ import java.util.stream.Stream;
  * This class is a random access {@link java.util.List} implementation providing <em>O(log(n))</em>
  * time complexity for {@link #get(int)}, {@link #set(int, Object)}, {@link #add(int, Object)},
  * {@link #add(Object)}, and {@link #remove(int)} operations, <em>n</em> denoting the number of elements
- * on the list.<br/>
+ * on the list.<br>
  * It also provides a constructor for bulk-loading from another collection in <em>O(n)</em> time
- * where <em>n</em> is the number of elements in the source collection.<br/>
+ * where <em>n</em> is the number of elements in the source collection.<br>
  * Two different {@link TreeList} instances may be concatenated
  * in <em>O(log(n<sub>1</sub> + n<sub>2</sub>))</em> time, where <em>n<sub>1</sub></em>
  * and <em>n<sub>2</sub></em> are the sizes of the original lists
- * (both of which are cleared).<br/>
+ * (both of which are cleared).<br>
  * Although {@link #addAll(int, Collection)} method
  * generally requires <em>O(m log(m + n))</em> time, it runs in <em>O(m + log(m + n))</em> time if
  * the insertion location is either before the first or past the last element of the list
@@ -34,7 +34,7 @@ import java.util.stream.Stream;
 public class TreeList<T> extends AbstractList<T> {
 
 	/**
-	 * This is the node class used by {@link TreeList}.<br/>
+	 * This is the node class used by {@link TreeList}.<br>
 	 * Limitations of Java generic type inference do not allow making {@link Node}
 	 * a generic type while preserving the tree merge functionality.
 	 */
@@ -492,7 +492,7 @@ public class TreeList<T> extends AbstractList<T> {
 	 * Inserts the contents of the passed collection into the list starting from the given
 	 * position, preserving the order of collection elements as returned by its iterator. The
 	 * original elements whose indices start the insertion position will have their indices
-	 * increased by the size of the collection.<br/>
+	 * increased by the size of the collection.<br>
 	 * If the collection is prepended ({@code index == 0}) or appended ({@code index == size()})
 	 * to this list, the operation runs in <em>O(m + log(m + n))</em> time, where <em>n</em> is the
 	 * size of this list and <em>m</em> is the size of the collection. Otherwise, the operation runs in
@@ -540,6 +540,7 @@ public class TreeList<T> extends AbstractList<T> {
 	 * Both original lists are cleared.
 	 * @param prefix the list containing the head portion of the expected result
 	 * @param suffix the list containing the tail portion of the expected result
+	 * @param <Q> the output list generic type argument
 	 * @return the new list being a concatenation of the two original lists
 	 */
 	public static <Q> TreeList<Q> concat(TreeList<? extends Q> prefix, TreeList<? extends Q> suffix) {
