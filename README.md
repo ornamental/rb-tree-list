@@ -1,4 +1,4 @@
-# `List` implementation based on red-black tree
+# `List` Implementation based on Red-Black Tree
 `TreeList<T>` is a random-access `List<T>` implementation having the operation time complexities 
 as described below. It provides a trade-off between costly seek operations of `LinkedList`
 and linear-time insertions and removals in non-final positions of `ArrayList`.
@@ -18,3 +18,6 @@ instances, the lists may be concatenated using the static
 `TreeList::concat(TreeList, TreeList)` method in only 
 _O(log(n<sub>1</sub> + n<sub>2</sub>))_ time, though the operation will clear 
 both original lists. 
+
+Unlike some other red-black tree implementations, this one does not use the child-to-parent
+references, rather using a stack of nodes when performing the modification operations.

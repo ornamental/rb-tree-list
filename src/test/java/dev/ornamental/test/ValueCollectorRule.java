@@ -12,7 +12,7 @@ import org.junit.runners.model.Statement;
  * in case the test fails. This is particularly useful for the randomized tests.<br>
  * The {@link #put(String, Object)} and {@link #remove(String)} methods are used inside a test method
  * to form a key-value mapping to be sent to {@link System#out} upon test failure. The mapping is cleared
- *
+ * after each test.
  */
 public final class ValueCollectorRule implements TestRule {
 
